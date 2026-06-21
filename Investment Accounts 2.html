@@ -1,0 +1,3620 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Tracker</title>
+  <meta name="theme-color" content="#0B1220">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%230B1220'/%3E%3Ccircle cx='20' cy='20' r='14.5' fill='none' stroke='%23B6862C' stroke-width='1.3'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-family='Georgia,serif' font-size='15' fill='%23B6862C'%3EPT%3C/text%3E%3C/svg%3E">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+  <style>
+    :root {
+      /* Light theme (default) — "ledger & brass" palette */
+      --color-primary: #B6862C;
+      --color-primary-light: #D1A14A;
+      --color-primary-dark: #8F6A22;
+      --color-on-accent: #1C1404;
+      --color-accent-soft: rgba(182, 134, 44, 0.12);
+
+      --color-success: #1E7A52;
+      --color-success-light: #4FA97C;
+      --color-success-bg: rgba(30, 122, 82, 0.09);
+      --color-danger: #B23A4A;
+      --color-danger-light: #D97582;
+      --color-danger-bg: rgba(178, 58, 74, 0.08);
+      --color-warning: #A8671E;
+      --color-warning-bg: rgba(168, 103, 30, 0.1);
+
+      --color-bg: #F2F3F5;
+      --color-bg-alt: #EAEBEE;
+      --color-bg-elevated: #ffffff;
+      --color-border: #E1E3E8;
+      --color-border-strong: #C9CDD6;
+      --color-text: #14161D;
+      --color-text-muted: #5B6072;
+      --color-text-subtle: #9296A3;
+
+      --color-sidebar: #0B1220;
+      --color-sidebar-text: #F4F2EC;
+      --color-sidebar-hover: #161F33;
+
+      --color-input-bg: #ffffff;
+      --color-neutral-100: #f3f4f6;
+      --color-neutral-200: #e5e7eb;
+
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+      
+      /* Spacing */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      
+      /* Typography */
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --color-primary: #D7AC56;
+      --color-primary-light: #E5C27C;
+      --color-primary-dark: #B6862C;
+      --color-on-accent: #1C1404;
+      --color-accent-soft: rgba(215, 172, 86, 0.16);
+
+      --color-success: #3FAE7C;
+      --color-success-light: #6FC79B;
+      --color-danger: #DD6C7C;
+      --color-danger-light: #E89AA5;
+      --color-warning: #D08A3E;
+
+      --color-bg: #0D1117;
+      --color-bg-alt: #161B26;
+      --color-bg-elevated: #161B26;
+      --color-border: #2A3142;
+      --color-border-strong: #3A4256;
+      --color-text: #EEEFF3;
+      --color-text-muted: #9BA1B0;
+      --color-text-subtle: #6B7184;
+
+      --color-sidebar: #0B1220;
+      --color-sidebar-text: #F4F2EC;
+      --color-sidebar-hover: #161F33;
+
+      --color-input-bg: #161B26;
+      --color-neutral-100: #1e293b;
+      --color-neutral-200: #334155;
+
+      --color-success-bg: rgba(63, 174, 124, 0.15);
+      --color-danger-bg: rgba(221, 108, 124, 0.15);
+      --color-warning-bg: rgba(208, 138, 62, 0.15);
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 999px; border: 2px solid var(--color-bg); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--color-text-subtle); }
+
+    /* Keyboard accessibility */
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+    textarea:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Ticker Tape */
+    .ticker-tape {
+      flex-shrink: 0;
+      height: 32px;
+      background: var(--color-sidebar);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      position: relative;
+    }
+
+    .ticker-tape.empty {
+      display: none;
+    }
+
+    .ticker-tape::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 48px;
+      background: linear-gradient(to left, var(--color-sidebar), transparent);
+      pointer-events: none;
+    }
+
+    .ticker-tape-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 26px;
+      padding-left: 20px;
+      animation: ticker-scroll 42s linear infinite;
+      will-change: transform;
+    }
+
+    .ticker-tape:hover .ticker-tape-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.2px;
+    }
+
+    .ticker-item .tk-sym {
+      font-weight: 600;
+      color: var(--color-sidebar-text);
+    }
+
+    .ticker-item .tk-price {
+      color: rgba(244, 242, 236, 0.55);
+    }
+
+    .ticker-item .tk-chg.positive { color: var(--color-success-light); }
+    .ticker-item .tk-chg.negative { color: var(--color-danger-light); }
+
+    .ticker-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(244, 242, 236, 0.22);
+      flex-shrink: 0;
+    }
+
+    .container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--color-sidebar);
+      color: var(--color-sidebar-text);
+      padding: var(--space-lg);
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: var(--space-xl);
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 14px;
+      color: var(--color-primary);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-mark::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(182, 134, 44, 0.35);
+      border-radius: 50%;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 17px;
+      color: var(--color-sidebar-text);
+      letter-spacing: -0.2px;
+    }
+
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      letter-spacing: 3px;
+      color: var(--color-text-subtle);
+      text-transform: uppercase;
+    }
+
+    .nav {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: var(--space-sm);
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      background: none;
+      color: inherit;
+      font-size: var(--text-base);
+      font-family: inherit;
+      text-align: left;
+      width: 100%;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background: var(--color-sidebar-hover);
+    }
+
+    .nav-link.active {
+      background: var(--color-accent-soft);
+      font-weight: 600;
+      color: var(--color-sidebar-text);
+    }
+
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      left: -2px;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--color-primary);
+    }
+
+    .nav-link.active svg {
+      stroke: var(--color-primary);
+    }
+
+    .nav-link svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .topbar {
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      padding: var(--space-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-title {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    /* Account Switcher */
+    .account-switcher {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      overflow-x: auto;
+      max-width: 460px;
+      padding-bottom: 2px;
+    }
+
+    .account-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-alt);
+      color: var(--color-text);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    .account-pill:hover {
+      border-color: var(--color-border-strong);
+    }
+
+    .account-pill.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-on-accent);
+      font-weight: 600;
+    }
+
+    .account-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+
+    .market-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 999px;
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .market-status.open .status-dot {
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(30, 122, 82, 0.45); }
+      50% { box-shadow: 0 0 0 4px rgba(30, 122, 82, 0); }
+    }
+
+    .market-status.open {
+      color: var(--color-success);
+      border-color: var(--color-success-light);
+      background: var(--color-success-bg);
+    }
+
+    .market-status.closed {
+      color: var(--color-danger);
+      border-color: var(--color-danger-light);
+      background: var(--color-danger-bg);
+    }
+
+    .theme-toggle {
+      background: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      padding: var(--space-sm);
+      cursor: pointer;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      transition: background 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--color-neutral-200);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-xl);
+      background: var(--color-bg-alt);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: view-in 0.35s ease both;
+    }
+
+    @keyframes view-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid & Layout */
+    .grid {
+      display: grid;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    /* Cards */
+    .card {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--color-border-strong);
+    }
+
+    .card-title {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-sm);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      margin-bottom: var(--space-xs);
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.5px;
+    }
+
+    .card-change {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      font-family: var(--font-mono);
+    }
+
+    .card-change.positive {
+      color: var(--color-success);
+    }
+
+    .card-change.negative {
+      color: var(--color-danger);
+    }
+
+    .card-subtitle {
+      font-size: var(--text-xs);
+      color: var(--color-text-subtle);
+      margin-top: var(--space-xs);
+    }
+
+    /* Dashboard hero */
+    .dash-hero {
+      margin-bottom: var(--space-lg);
+    }
+
+    .card-hero {
+      background: linear-gradient(155deg, var(--color-bg-elevated) 0%, var(--color-bg-elevated) 60%, var(--color-accent-soft) 160%);
+      border: 1px solid var(--color-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--color-primary);
+    }
+
+    .hero-value-row {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    .hero-value {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      letter-spacing: -1px;
+      margin-bottom: 0;
+    }
+
+    .hero-spark {
+      width: 140px;
+      height: 42px;
+      flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: var(--space-sm) var(--space-md);
+      border: none;
+      border-radius: 8px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-on-accent);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+      color: var(--color-on-accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(182, 134, 44, 0.28);
+    }
+
+    .btn-secondary {
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--color-neutral-200);
+    }
+
+    .btn-danger {
+      background: var(--color-danger);
+      color: white;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--text-xs);
+    }
+
+    .btn-icon {
+      padding: var(--space-xs);
+      width: 32px;
+      height: 32px;
+      justify-content: center;
+    }
+
+    .btn-block {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+      font-size: var(--text-sm);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      font-size: var(--text-base);
+      font-family: inherit;
+      transition: border 0.2s;
+      background: var(--color-input-bg);
+      color: var(--color-text);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(182, 134, 44, 0.15);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .input-with-loader {
+      position: relative;
+    }
+
+    .input-loader {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+    }
+
+    .input-loader.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+
+    th {
+      text-align: left;
+      padding: var(--space-md);
+      font-weight: 600;
+      background: var(--color-bg-alt);
+      border-bottom: 2px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      white-space: nowrap;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--color-text-muted);
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    th.sortable:hover {
+      background: var(--color-neutral-200);
+    }
+
+    th.sortable .sort-indicator {
+      display: inline-block;
+      margin-left: 4px;
+      opacity: 0.3;
+      font-size: var(--text-xs);
+    }
+
+    th.sortable.active .sort-indicator {
+      opacity: 1;
+      color: var(--color-primary-dark);
+    }
+
+    td {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    #holdingsTable td:first-child strong,
+    #dividendTable td:first-child strong,
+    #callsTable td:first-child strong {
+      font-family: var(--font-mono);
+      letter-spacing: 0.3px;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: var(--color-bg-alt);
+    }
+
+    tbody tr.big-gain {
+      background: var(--color-success-bg);
+    }
+
+    tbody tr.big-gain:hover {
+      background: rgba(16, 185, 129, 0.12);
+    }
+
+    tbody tr.big-loss {
+      background: var(--color-danger-bg);
+    }
+
+    tbody tr.big-loss:hover {
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .amount {
+      font-weight: 600;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+    }
+
+    .amount.positive {
+      color: var(--color-success);
+    }
+
+    .amount.negative {
+      color: var(--color-danger);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-primary {
+      background: rgba(182, 134, 44, 0.12);
+      color: var(--color-primary-dark);
+    }
+
+    .badge-success {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .badge-danger {
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+    }
+
+    .badge-warning {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+    }
+
+    .badge-stale {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+      font-size: 10px;
+      padding: 1px 6px;
+      margin-left: var(--space-xs);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+    }
+
+    .badge-fresh {
+      color: var(--color-text-subtle);
+      font-size: 10px;
+      padding: 1px 6px;
+      margin-left: var(--space-xs);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      position: relative;
+      height: 380px;
+    }
+
+    .chart-container.small {
+      height: 280px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: var(--space-lg);
+      right: var(--space-lg);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--color-text);
+      color: var(--color-bg);
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 360px;
+    }
+
+    .toast svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toast.success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .toast.danger {
+      background: var(--color-danger);
+      color: white;
+    }
+
+    .toast.warning {
+      background: var(--color-warning);
+      color: white;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--color-bg-elevated);
+      border-radius: 12px;
+      padding: var(--space-xl);
+      max-width: 600px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .modal-header {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 400;
+      margin-bottom: var(--space-lg);
+    }
+
+    .modal-message {
+      margin-bottom: var(--space-lg);
+      color: var(--color-text-muted);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: flex-end;
+      margin-top: var(--space-xl);
+    }
+
+    /* Concentration Warning */
+    .alert {
+      padding: var(--space-md);
+      border-radius: 8px;
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      font-size: var(--text-sm);
+    }
+
+    .alert-warning {
+      background: var(--color-warning-bg);
+      color: var(--color-warning);
+      border: 1px solid var(--color-warning);
+    }
+
+    .alert svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 400;
+      letter-spacing: -0.2px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-2xl);
+      color: var(--color-text-muted);
+    }
+
+    .empty-state-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto var(--space-md);
+      color: var(--color-text-subtle);
+      opacity: 0.6;
+    }
+
+    .empty-state-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .empty-state-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 400;
+      margin-bottom: var(--space-sm);
+      color: var(--color-text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        display: flex;
+        height: auto;
+        padding: var(--space-md);
+        gap: var(--space-md);
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
+      .brand {
+        margin-bottom: 0;
+      }
+
+      .brand-sub {
+        display: none;
+      }
+
+      .ticker-tape {
+        height: 28px;
+      }
+
+      .ticker-item {
+        font-size: 10.5px;
+      }
+
+      .hero-spark {
+        display: none;
+      }
+
+      .hero-value {
+        font-size: 2rem;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-xs);
+        flex-wrap: nowrap;
+      }
+
+      .nav-link {
+        flex: none;
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--text-xs);
+        white-space: nowrap;
+      }
+
+      .nav-link svg {
+        display: none;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: var(--space-md);
+        align-items: flex-start;
+      }
+
+      .content {
+        padding: var(--space-lg);
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card-value {
+        font-size: var(--text-xl);
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ticker-tape empty" id="tickerTape">
+    <div class="ticker-tape-track" id="tickerTapeTrack"></div>
+  </div>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">PT</div>
+        <div class="brand-text">
+          <span class="brand-name">Portfolio</span>
+          <span class="brand-sub">Tracker</span>
+        </div>
+      </div>
+      <ul class="nav">
+        <li class="nav-item">
+          <button class="nav-link active" data-view="setup" onclick="navigate('setup', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+            Setup
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="dashboard" onclick="navigate('dashboard', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+            Dashboard
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="holdings" onclick="navigate('holdings', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"></path></svg>
+            Holdings
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="add" onclick="navigate('add', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Position
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="performance" onclick="navigate('performance', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 17"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            Performance
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="dividends" onclick="navigate('dividends', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"></path></svg>
+            Dividends
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="calls" onclick="navigate('calls', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"></path></svg>
+            Covered Calls
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-view="settings" onclick="navigate('settings', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="12" x2="15" y2="12"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+            Settings
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-title" id="pageTitle">Setup</div>
+        <div class="topbar-right">
+          <div class="account-switcher" id="accountSwitcher"></div>
+          <div class="market-status closed" id="marketStatus"><span class="status-dot"></span>Market Closed</div>
+          <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle" title="Toggle theme">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Setup View -->
+        <div id="setup" class="view active">
+          <div class="card" style="max-width: 500px;">
+            <h2 style="margin-bottom: var(--space-lg);">Finnhub API Setup</h2>
+            <div class="form-group">
+              <label class="form-label">API Key</label>
+              <input type="password" id="apiKey" class="form-input" placeholder="d1234567890abcdef">
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-top: var(--space-sm);">
+                Get your free key at <a href="https://finnhub.io" target="_blank" style="color: var(--color-primary);">finnhub.io</a>
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Default Currency</label>
+              <select id="currency" class="form-select">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="CAD">CAD</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="saveSetup()">Save Settings</button>
+          </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboard" class="view">
+          <div class="section-header">
+            <div class="section-title">Overview</div>
+            <button class="btn btn-primary" onclick="refreshAllPrices()" id="refreshBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.85-3.36M20.49 15a9 9 0 01-14.85 3.36"></path></svg>
+              Refresh Prices
+            </button>
+          </div>
+
+          <div id="concentrationAlert"></div>
+
+          <div class="dash-hero">
+            <div class="card card-hero">
+              <div class="card-title">Total Value</div>
+              <div class="hero-value-row">
+                <div class="card-value hero-value" id="totalValue">$0.00</div>
+                <svg class="hero-spark" id="heroSparkline" viewBox="0 0 140 42" preserveAspectRatio="none"></svg>
+              </div>
+              <div class="card-change" id="totalChange">-</div>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="card">
+              <div class="card-title">Total Cost Basis</div>
+              <div class="card-value" id="totalCost">$0.00</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Gain/Loss</div>
+              <div class="card-value" id="gainLoss">$0.00</div>
+              <div class="card-change" id="gainLossPercent">-</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Day's Change</div>
+              <div class="card-value" id="dayChange">$0.00</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Best Performer</div>
+              <div class="card-value" id="bestPerformer" style="font-size: var(--text-xl);">-</div>
+              <div class="card-change positive" id="bestPerformerPct">-</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Worst Performer</div>
+              <div class="card-value" id="worstPerformer" style="font-size: var(--text-xl);">-</div>
+              <div class="card-change negative" id="worstPerformerPct">-</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Annual Dividends</div>
+              <div class="card-value" id="annualDividends">$0.00</div>
+              <div class="card-change" id="divYield">-</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Covered Call Income</div>
+              <div class="card-value" id="callIncome">$0.00</div>
+            </div>
+            <div class="card">
+              <div class="card-title"># of Positions</div>
+              <div class="card-value" id="positionCount">0</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Last Updated</div>
+              <div class="card-value" id="lastUpdated" style="font-size: var(--text-lg);">Never</div>
+              <div class="card-subtitle" id="lastUpdatedDate"></div>
+            </div>
+          </div>
+
+          <div id="accountBreakdown"></div>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <div class="section-title" style="margin-bottom: var(--space-lg);">Allocation by Sector</div>
+              <div class="chart-container">
+                <canvas id="allocationChart"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <div class="section-title" style="margin-bottom: var(--space-lg);">Position Values</div>
+              <div class="chart-container">
+                <canvas id="holdingsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Holdings View -->
+        <div id="holdings" class="view">
+          <div class="section-header">
+            <div class="section-title">Holdings</div>
+            <div style="display: flex; gap: var(--space-sm);">
+              <button class="btn btn-secondary" onclick="refreshAllPrices()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.85-3.36M20.49 15a9 9 0 01-14.85 3.36"></path></svg>
+                Refresh
+              </button>
+              <button class="btn btn-primary" onclick="navigate('add')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Position
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="sortable" onclick="sortHoldings('ticker')">Ticker<span class="sort-indicator">▼</span></th>
+                    <th id="holdingsAccountHeader">Account</th>
+                    <th>Type</th>
+                    <th class="sortable" onclick="sortHoldings('shares')">Shares<span class="sort-indicator">▼</span></th>
+                    <th class="sortable" onclick="sortHoldings('avgCost')">Avg Cost<span class="sort-indicator">▼</span></th>
+                    <th class="sortable" onclick="sortHoldings('price')">Current Price<span class="sort-indicator">▼</span></th>
+                    <th class="sortable" onclick="sortHoldings('value')">Value<span class="sort-indicator">▼</span></th>
+                    <th class="sortable active" onclick="sortHoldings('gainLoss')">Gain/Loss<span class="sort-indicator">▼</span></th>
+                    <th class="sortable" onclick="sortHoldings('gainLossPct')">% Change<span class="sort-indicator">▼</span></th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="holdingsTable">
+                  <tr><td colspan="100%"><div class="empty-state"><div class="empty-state-title">No holdings yet</div><div>Add your first position to get started</div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Position View -->
+        <div id="add" class="view">
+          <div class="card" style="max-width: 600px;">
+            <h2 style="margin-bottom: var(--space-lg);">Add Position</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Ticker</label>
+                <div class="input-with-loader">
+                  <input type="text" id="addTicker" class="form-input" placeholder="e.g. VTI" style="text-transform: uppercase;" onblur="autoFillProfile()">
+                  <div class="input-loader" id="addTickerLoader"><div class="spinner"></div></div>
+                </div>
+                <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-xs);">Tab out to auto-fill sector & name</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Account</label>
+                <select id="addAccountId" class="form-select"></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Type</label>
+                <select id="addType" class="form-select">
+                  <option value="stock">Stock</option>
+                  <option value="etf">ETF</option>
+                  <option value="crypto">Crypto</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Shares</label>
+                <input type="number" id="addShares" class="form-input" placeholder="10" min="0.0001" step="0.0001">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Avg Cost / Share</label>
+                <input type="number" id="addCost" class="form-input" placeholder="215.40" min="0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Buy Date</label>
+                <input type="date" id="addDate" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sector</label>
+                <input type="text" id="addSector" class="form-input" placeholder="e.g. Technology">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notes</label>
+              <textarea id="addNotes" class="form-textarea" rows="2" placeholder="Optional notes..."></textarea>
+            </div>
+            <div style="display: flex; gap: var(--space-md);">
+              <button class="btn btn-primary" onclick="addPosition()">Add Position</button>
+              <button class="btn btn-secondary" onclick="navigate('holdings')">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance View -->
+        <div id="performance" class="view">
+          <div class="section-header">
+            <div class="section-title">Portfolio Performance</div>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base); color: var(--color-text-muted);">Total Value Over Time</h3>
+            <div class="chart-container">
+              <canvas id="performanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dividends View -->
+        <div id="dividends" class="view">
+          <div class="section-header">
+            <div class="section-title">Dividend Income</div>
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base);">Log Dividend</h3>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="form-label">Ticker</label>
+                  <input type="text" id="divTicker" class="form-input" placeholder="e.g. SCHD" style="text-transform: uppercase;">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Amount</label>
+                  <input type="number" id="divAmount" class="form-input" placeholder="47.20" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date</label>
+                  <input type="date" id="divDate" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Per Share</label>
+                  <input type="number" id="divPerShare" class="form-input" placeholder="0.59" min="0" step="0.0001">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Account</label>
+                  <select id="divAccountId" class="form-select"></select>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-block" onclick="addDividend()">Log Dividend</button>
+            </div>
+
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base);">Monthly Income (Last 12 Months)</h3>
+              <div class="chart-container small">
+                <canvas id="dividendChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base);">Dividend History</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ticker</th>
+                    <th id="dividendAccountHeader">Account</th>
+                    <th>Date</th>
+                    <th>Per Share</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="dividendTable">
+                  <tr><td colspan="100%"><div class="empty-state"><div>No dividends logged yet</div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Covered Calls View -->
+        <div id="calls" class="view">
+          <div class="section-header">
+            <div class="section-title">Covered Calls</div>
+          </div>
+
+          <div class="card" style="max-width: 700px; margin-bottom: var(--space-lg);">
+            <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base);">Log Covered Call</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Ticker</label>
+                <input type="text" id="callTicker" class="form-input" placeholder="e.g. AAPL" style="text-transform: uppercase;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Strike Price</label>
+                <input type="number" id="callStrike" class="form-input" placeholder="210" min="0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Expiry Date</label>
+                <input type="date" id="callExpiry" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Premium / Contract</label>
+                <input type="number" id="callPremium" class="form-input" placeholder="1.45" min="0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Contracts</label>
+                <input type="number" id="callContracts" class="form-input" placeholder="1" min="1" step="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Account</label>
+                <select id="callAccountId" class="form-select"></select>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="addCoveredCall()">Log Call</button>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-bottom: var(--space-lg); font-size: var(--text-base);">All Calls</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ticker</th>
+                    <th id="callsAccountHeader">Account</th>
+                    <th>Strike</th>
+                    <th>Expiry</th>
+                    <th>Premium</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="callsTable">
+                  <tr><td colspan="100%"><div class="empty-state"><div>No covered calls logged yet</div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings" class="view">
+          <div class="section-header">
+            <div class="section-title">Settings</div>
+          </div>
+          <div class="grid grid-2">
+            <div class="card" style="grid-column: 1 / -1;">
+              <div class="section-header" style="margin-bottom: var(--space-md);">
+                <h3 style="font-size: var(--text-base);">Accounts</h3>
+                <button class="btn btn-primary btn-sm" onclick="openAccountModal()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  Add Account
+                </button>
+              </div>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-md);">Track each brokerage separately, then view them combined with the switcher in the top bar.</p>
+              <div id="accountsList"></div>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-md); font-size: var(--text-base);">Export Data</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-lg);">Download your portfolio as JSON</p>
+              <button class="btn btn-primary btn-block" onclick="exportData()">Export JSON</button>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-md); font-size: var(--text-base);">Import Data</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-lg);">Restore portfolio from backup</p>
+              <input type="file" id="importFile" style="display: none;" accept=".json">
+              <button class="btn btn-primary btn-block" onclick="document.getElementById('importFile').click()">Import JSON</button>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-md); font-size: var(--text-base);">API Key</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-lg);">Change your Finnhub API key</p>
+              <button class="btn btn-secondary btn-block" onclick="navigate('setup')">Update API Key</button>
+            </div>
+            <div class="card">
+              <h3 style="margin-bottom: var(--space-md); font-size: var(--text-base);">Reset Data</h3>
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-lg);">Clear all data and start fresh</p>
+              <button class="btn btn-danger btn-block" onclick="resetConfirm()">Reset All Data</button>
+            </div>
+            <div class="card" style="grid-column: 1 / -1;">
+              <h3 style="margin-bottom: var(--space-md); font-size: var(--text-base);">Keyboard Shortcuts</h3>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); font-size: var(--text-sm);">
+                <div><kbd style="background: var(--color-neutral-100); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border);">R</kbd> Refresh prices</div>
+                <div><kbd style="background: var(--color-neutral-100); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border);">A</kbd> Add position</div>
+                <div><kbd style="background: var(--color-neutral-100); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border);">D</kbd> Dashboard</div>
+                <div><kbd style="background: var(--color-neutral-100); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border);">H</kbd> Holdings</div>
+                <div><kbd style="background: var(--color-neutral-100); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--color-border);">T</kbd> Toggle theme</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header" id="confirmTitle">Confirm Action</div>
+      <p class="modal-message" id="confirmMessage"></p>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+        <button class="btn btn-danger" id="confirmBtn" onclick="executeConfirm()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Holding Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">Edit Position</div>
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Ticker</label>
+          <input type="text" id="editTicker" class="form-input" style="text-transform: uppercase;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account</label>
+          <select id="editAccountId" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select id="editType" class="form-select">
+            <option value="stock">Stock</option>
+            <option value="etf">ETF</option>
+            <option value="crypto">Crypto</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shares</label>
+          <input type="number" id="editShares" class="form-input" min="0.0001" step="0.0001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Avg Cost / Share</label>
+          <input type="number" id="editCost" class="form-input" min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Buy Date</label>
+          <input type="date" id="editDate" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sector</label>
+          <input type="text" id="editSector" class="form-input">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea id="editNotes" class="form-textarea" rows="2"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Modal -->
+  <div class="modal" id="accountModal">
+    <div class="modal-content">
+      <div class="modal-header" id="accountModalTitle">Add Account</div>
+      <input type="hidden" id="accountModalId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Account Name</label>
+          <input type="text" id="accountName" class="form-input" placeholder="e.g. Robinhood">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Institution</label>
+          <input type="text" id="accountInstitution" class="form-input" placeholder="e.g. Robinhood Markets">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <select id="accountType" class="form-select">
+            <option value="taxable">Taxable Brokerage</option>
+            <option value="traditional_ira">Traditional IRA</option>
+            <option value="roth_ira">Roth IRA</option>
+            <option value="traditional_401k">Traditional 401(k)</option>
+            <option value="roth_401k">Roth 401(k)</option>
+            <option value="hsa">HSA</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <input type="color" id="accountColor" class="form-input" style="height: 42px; padding: 4px; cursor: pointer;" value="#3b82f6">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAccountModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAccount()">Save Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reassign Modal (shown when deleting an account that still has data) -->
+  <div class="modal" id="reassignModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">Reassign Before Deleting</div>
+      <input type="hidden" id="reassignAccountId">
+      <p class="modal-message" id="reassignMessage"></p>
+      <div class="form-group">
+        <label class="form-label">Move existing records to</label>
+        <select id="reassignTarget" class="form-select"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeReassignModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmReassignAndDelete()">Reassign &amp; Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== STATE ====================
+    let state = {
+      apiKey: '',
+      currency: 'USD',
+      accounts: [],
+      activeAccountFilter: 'all',
+      holdings: [],
+      priceCache: {},
+      profileCache: {},
+      dividends: [],
+      coveredCalls: [],
+      snapshots: []
+    };
+
+    let sortState = { column: 'gainLoss', direction: 'desc' };
+    let chartInstances = {};
+
+    const STALE_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
+
+    const EMPTY_STATE_ICON = '<div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M3 11h18"></path><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg></div>';
+
+    // ==================== INIT ====================
+    window.addEventListener('load', () => {
+      loadState();
+      loadTheme();
+      renderApiKey();
+      renderCurrency();
+      renderAccountSwitcher();
+      populateAccountSelect('addAccountId');
+      snapshotToday();
+      checkMarketStatus();
+      setInterval(checkMarketStatus, 60000);
+      setupKeyboardShortcuts();
+    });
+
+    // ==================== THEME ====================
+    function loadTheme() {
+      const saved = localStorage.getItem('ptTheme') || 'light';
+      document.documentElement.setAttribute('data-theme', saved);
+      updateThemeIcon(saved);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('ptTheme', next);
+      updateThemeIcon(next);
+      // Re-render any visible charts so they pick up new colors
+      const active = document.querySelector('.view.active')?.id;
+      if (active === 'dashboard') renderDashboard();
+      else if (active === 'performance') renderPerformanceChart();
+      else if (active === 'dividends') renderDividendChart();
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.getElementById('themeIcon');
+      if (theme === 'dark') {
+        // Moon icon
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>';
+      } else {
+        // Sun icon
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      }
+    }
+
+    function getCSSVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    // ==================== KEYBOARD SHORTCUTS ====================
+    function setupKeyboardShortcuts() {
+      document.addEventListener('keydown', (e) => {
+        // Don't trigger when typing in an input
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        switch (e.key.toLowerCase()) {
+          case 'r': refreshAllPrices(); break;
+          case 'a': navigate('add'); break;
+          case 'd': navigate('dashboard'); break;
+          case 'h': navigate('holdings'); break;
+          case 't': toggleTheme(); break;
+        }
+      });
+    }
+
+    // ==================== NAVIGATION (BUG FIX) ====================
+    function navigate(viewId, element) {
+      // Hide all views
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const view = document.getElementById(viewId);
+      if (!view) return;
+      view.classList.add('active');
+      
+      // Update nav buttons - find by data-view, not event.target
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      const navLink = element || document.querySelector(`.nav-link[data-view="${viewId}"]`);
+      if (navLink) navLink.classList.add('active');
+      
+      // Update page title
+      const titles = {
+        setup: 'Setup',
+        dashboard: 'Dashboard',
+        holdings: 'Holdings',
+        add: 'Add Position',
+        performance: 'Performance',
+        dividends: 'Dividends',
+        calls: 'Covered Calls',
+        settings: 'Settings'
+      };
+      document.getElementById('pageTitle').textContent = titles[viewId] || 'Portfolio Tracker';
+      
+      // Render view-specific content
+      if (viewId === 'dashboard') {
+        renderDashboard();
+        checkStaleData();
+      } else if (viewId === 'holdings') {
+        renderHoldingsTable();
+      } else if (viewId === 'add') {
+        populateAccountSelect('addAccountId');
+      } else if (viewId === 'dividends') {
+        populateAccountSelect('divAccountId');
+        renderDividendTable();
+        renderDividendChart();
+      } else if (viewId === 'calls') {
+        populateAccountSelect('callAccountId');
+        renderCallsTable();
+      } else if (viewId === 'performance') {
+        renderPerformanceChart();
+      } else if (viewId === 'settings') {
+        renderAccountsList();
+      }
+    }
+
+    // ==================== STATE PERSISTENCE ====================
+    function saveState() {
+      localStorage.setItem('ptState', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem('ptState');
+      if (saved) {
+        try {
+          const loaded = JSON.parse(saved);
+          // Ensure profileCache exists for users with old state
+          if (!loaded.profileCache) loaded.profileCache = {};
+          Object.assign(state, loaded);
+        } catch (e) {
+          console.error('Error loading state:', e);
+        }
+      }
+      migrateAccounts();
+    }
+
+    // One-time (and idempotent) migration: ensures every holding/dividend/call
+    // has an accountId. Anything that predates multi-account support gets
+    // bucketed into a default "Unassigned" account so nothing breaks.
+    function migrateAccounts() {
+      if (!Array.isArray(state.accounts)) state.accounts = [];
+      if (!state.activeAccountFilter) state.activeAccountFilter = 'all';
+
+      const needsDefault = state.accounts.length === 0 ||
+        state.holdings.some(h => !h.accountId) ||
+        state.dividends.some(d => !d.accountId) ||
+        state.coveredCalls.some(c => !c.accountId);
+
+      let defaultAccount = state.accounts.find(a => a.id === 'acc_unassigned');
+      if (needsDefault && !defaultAccount) {
+        defaultAccount = {
+          id: 'acc_unassigned',
+          name: 'Unassigned',
+          institution: '',
+          type: 'taxable',
+          color: '#9ca3af'
+        };
+        state.accounts.unshift(defaultAccount);
+      }
+
+      const fallbackId = defaultAccount ? defaultAccount.id : (state.accounts[0] && state.accounts[0].id);
+      if (fallbackId) {
+        state.holdings.forEach(h => { if (!h.accountId) h.accountId = fallbackId; });
+        state.dividends.forEach(d => { if (!d.accountId) d.accountId = fallbackId; });
+        state.coveredCalls.forEach(c => { if (!c.accountId) c.accountId = fallbackId; });
+      }
+
+      saveState();
+    }
+
+    // ==================== ACCOUNTS ====================
+    function getAccount(id) {
+      return state.accounts.find(a => a.id === id);
+    }
+
+    function getFilteredHoldings() {
+      if (state.activeAccountFilter === 'all') return state.holdings;
+      return state.holdings.filter(h => h.accountId === state.activeAccountFilter);
+    }
+
+    function getFilteredDividends() {
+      if (state.activeAccountFilter === 'all') return state.dividends;
+      return state.dividends.filter(d => d.accountId === state.activeAccountFilter);
+    }
+
+    function getFilteredCoveredCalls() {
+      if (state.activeAccountFilter === 'all') return state.coveredCalls;
+      return state.coveredCalls.filter(c => c.accountId === state.activeAccountFilter);
+    }
+
+    function renderAccountSwitcher() {
+      const container = document.getElementById('accountSwitcher');
+      if (!container) return;
+
+      const allActive = state.activeAccountFilter === 'all' ? 'active' : '';
+      let html = `<button class="account-pill ${allActive}" onclick="setAccountFilter('all')">All Accounts</button>`;
+
+      html += state.accounts.map(a => {
+        const active = state.activeAccountFilter === a.id ? 'active' : '';
+        return `<button class="account-pill ${active}" onclick="setAccountFilter('${a.id}')">
+          <span class="account-dot" style="background:${a.color};"></span>${escapeHtml(a.name)}
+        </button>`;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    function setAccountFilter(accountId) {
+      state.activeAccountFilter = accountId;
+      saveState();
+      renderAccountSwitcher();
+
+      // Re-render whatever view is currently visible so the filter applies immediately
+      const active = document.querySelector('.view.active')?.id;
+      if (active === 'dashboard') {
+        renderDashboard();
+        checkStaleData();
+      } else if (active === 'holdings') {
+        renderHoldingsTable();
+      } else if (active === 'dividends') {
+        renderDividendTable();
+        renderDividendChart();
+      } else if (active === 'calls') {
+        renderCallsTable();
+      } else if (active === 'performance') {
+        renderPerformanceChart();
+      }
+    }
+
+    function renderAccountBadge(accountId) {
+      const acc = getAccount(accountId);
+      if (!acc) return '<span style="color: var(--color-text-subtle);">—</span>';
+      return `<span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+        <span class="account-dot" style="background:${acc.color};"></span>${escapeHtml(acc.name)}
+      </span>`;
+    }
+
+    // Fills a <select> with all accounts. If selectedId is given (or the select
+    // already has a value matching an account), that one is preserved; otherwise
+    // it defaults to the currently active account filter.
+    function populateAccountSelect(selectId, selectedId) {
+      const sel = document.getElementById(selectId);
+      if (!sel) return;
+      const current = selectedId || sel.value;
+      sel.innerHTML = state.accounts.map(a => `<option value="${a.id}">${escapeHtml(a.name)}</option>`).join('');
+      if (current && state.accounts.some(a => a.id === current)) {
+        sel.value = current;
+      } else if (state.activeAccountFilter !== 'all') {
+        sel.value = state.activeAccountFilter;
+      }
+    }
+
+    function refreshAccountSelects() {
+      populateAccountSelect('addAccountId');
+      populateAccountSelect('divAccountId');
+      populateAccountSelect('callAccountId');
+      populateAccountSelect('editAccountId');
+    }
+
+    const ACCOUNT_TYPE_LABELS = {
+      taxable: 'Taxable Brokerage',
+      traditional_ira: 'Traditional IRA',
+      roth_ira: 'Roth IRA',
+      traditional_401k: 'Traditional 401(k)',
+      roth_401k: 'Roth 401(k)',
+      hsa: 'HSA',
+      other: 'Other'
+    };
+
+    const ACCOUNT_COLOR_PALETTE = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6'];
+
+    function nextAccountColor() {
+      return ACCOUNT_COLOR_PALETTE[state.accounts.length % ACCOUNT_COLOR_PALETTE.length];
+    }
+
+    function renderAccountsList() {
+      const container = document.getElementById('accountsList');
+      if (!container) return;
+
+      if (state.accounts.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div>No accounts yet</div></div>';
+        return;
+      }
+
+      container.innerHTML = state.accounts.map(a => {
+        const count = state.holdings.filter(h => h.accountId === a.id).length;
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--space-md) 0; border-bottom: 1px solid var(--color-border);">
+            <div style="display: flex; align-items: center; gap: var(--space-md);">
+              <span class="account-dot" style="width: 14px; height: 14px; background: ${a.color};"></span>
+              <div>
+                <div style="font-weight: 600;">${escapeHtml(a.name)}</div>
+                <div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(a.institution || '—')} · ${ACCOUNT_TYPE_LABELS[a.type] || a.type} · ${count} position${count !== 1 ? 's' : ''}</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 4px;">
+              <button class="btn btn-icon btn-secondary" onclick="openAccountModal('${a.id}')" title="Edit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </button>
+              <button class="btn btn-icon btn-danger" onclick="deleteAccountConfirm('${a.id}')" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAccountModal(id) {
+      const isEdit = !!id;
+      document.getElementById('accountModalTitle').textContent = isEdit ? 'Edit Account' : 'Add Account';
+      document.getElementById('accountModalId').value = id || '';
+
+      if (isEdit) {
+        const a = getAccount(id);
+        if (!a) return;
+        document.getElementById('accountName').value = a.name;
+        document.getElementById('accountInstitution').value = a.institution || '';
+        document.getElementById('accountType').value = a.type;
+        document.getElementById('accountColor').value = a.color;
+      } else {
+        document.getElementById('accountName').value = '';
+        document.getElementById('accountInstitution').value = '';
+        document.getElementById('accountType').value = 'taxable';
+        document.getElementById('accountColor').value = nextAccountColor();
+      }
+
+      document.getElementById('accountModal').classList.add('active');
+    }
+
+    function closeAccountModal() {
+      document.getElementById('accountModal').classList.remove('active');
+    }
+
+    function saveAccount() {
+      const id = document.getElementById('accountModalId').value;
+      const name = document.getElementById('accountName').value.trim();
+      const institution = document.getElementById('accountInstitution').value.trim();
+      const type = document.getElementById('accountType').value;
+      const color = document.getElementById('accountColor').value;
+
+      if (!name) {
+        showToast('Please enter an account name', 'danger');
+        return;
+      }
+
+      if (id) {
+        const a = getAccount(id);
+        if (a) {
+          a.name = name;
+          a.institution = institution;
+          a.type = type;
+          a.color = color;
+        }
+      } else {
+        state.accounts.push({
+          id: 'acc_' + Date.now(),
+          name,
+          institution,
+          type,
+          color
+        });
+      }
+
+      saveState();
+      closeAccountModal();
+      renderAccountsList();
+      renderAccountSwitcher();
+      refreshAccountSelects();
+      showToast(id ? 'Account updated' : 'Account added', 'success');
+    }
+
+    function deleteAccountConfirm(id) {
+      const a = getAccount(id);
+      if (!a) return;
+
+      const holdingCount = state.holdings.filter(h => h.accountId === id).length;
+      const dividendCount = state.dividends.filter(d => d.accountId === id).length;
+      const callCount = state.coveredCalls.filter(c => c.accountId === id).length;
+      const total = holdingCount + dividendCount + callCount;
+
+      if (total === 0) {
+        showConfirm(
+          'Delete Account?',
+          `Delete "${a.name}"? This account has no holdings, dividends, or calls attached.`,
+          'Delete',
+          () => {
+            state.accounts = state.accounts.filter(x => x.id !== id);
+            if (state.activeAccountFilter === id) state.activeAccountFilter = 'all';
+            saveState();
+            renderAccountsList();
+            renderAccountSwitcher();
+            refreshAccountSelects();
+            showToast('Account deleted', 'success');
+          }
+        );
+        return;
+      }
+
+      openReassignModal(id, total);
+    }
+
+    function openReassignModal(id, total) {
+      const a = getAccount(id);
+      const others = state.accounts.filter(x => x.id !== id);
+
+      if (others.length === 0) {
+        showToast('Add another account first so existing records have somewhere to go', 'danger');
+        return;
+      }
+
+      document.getElementById('reassignAccountId').value = id;
+      document.getElementById('reassignMessage').textContent =
+        `"${a.name}" has ${total} record${total !== 1 ? 's' : ''} attached (holdings, dividends, or calls). Choose where to move them before deleting this account.`;
+
+      const targetSelect = document.getElementById('reassignTarget');
+      targetSelect.innerHTML = others.map(o => `<option value="${o.id}">${escapeHtml(o.name)}</option>`).join('');
+
+      document.getElementById('reassignModal').classList.add('active');
+    }
+
+    function closeReassignModal() {
+      document.getElementById('reassignModal').classList.remove('active');
+    }
+
+    function confirmReassignAndDelete() {
+      const id = document.getElementById('reassignAccountId').value;
+      const targetId = document.getElementById('reassignTarget').value;
+      if (!id || !targetId) return;
+
+      state.holdings.forEach(h => { if (h.accountId === id) h.accountId = targetId; });
+      state.dividends.forEach(d => { if (d.accountId === id) d.accountId = targetId; });
+      state.coveredCalls.forEach(c => { if (c.accountId === id) c.accountId = targetId; });
+      state.accounts = state.accounts.filter(x => x.id !== id);
+      if (state.activeAccountFilter === id) state.activeAccountFilter = 'all';
+
+      saveState();
+      closeReassignModal();
+      renderAccountsList();
+      renderAccountSwitcher();
+      refreshAccountSelects();
+
+      // Re-render whichever data view is active so reassigned records show up right away
+      const active = document.querySelector('.view.active')?.id;
+      if (active === 'holdings') renderHoldingsTable();
+      else if (active === 'dividends') { renderDividendTable(); renderDividendChart(); }
+      else if (active === 'calls') renderCallsTable();
+
+      showToast('Account deleted, records reassigned', 'success');
+    }
+
+    function renderAccountBreakdown() {
+      const container = document.getElementById('accountBreakdown');
+      if (!container) return;
+
+      // Only adds value when looking at the combined view across multiple accounts
+      if (state.activeAccountFilter !== 'all' || state.accounts.length < 2) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const cards = state.accounts.map(a => {
+        const holdings = state.holdings.filter(h => h.accountId === a.id);
+        if (holdings.length === 0) return null;
+
+        let value = 0, cost = 0;
+        holdings.forEach(h => {
+          const v = calcHoldingValue(h);
+          value += v.currentValue;
+          cost += v.costBasis;
+        });
+        const pct = cost > 0 ? ((value - cost) / cost) * 100 : 0;
+
+        return `
+          <div class="card" style="padding: var(--space-md) var(--space-lg);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="account-dot" style="background: ${a.color};"></span>
+              <span class="card-title" style="margin-bottom: 0;">${escapeHtml(a.name)}</span>
+            </div>
+            <div style="font-size: var(--text-lg); font-weight: 700;">${formatCurrency(value)}</div>
+            <div class="card-change ${pct >= 0 ? 'positive' : 'negative'}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}%</div>
+          </div>
+        `;
+      }).filter(Boolean);
+
+      if (cards.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="card-title" style="margin-bottom: var(--space-md); font-size: var(--text-xs);">By Account</div>
+        <div class="kpi-grid" style="margin-bottom: var(--space-xl);">
+          ${cards.join('')}
+        </div>
+      `;
+    }
+
+    // ==================== SETUP ====================
+    function saveSetup() {
+      state.apiKey = document.getElementById('apiKey').value.trim();
+      state.currency = document.getElementById('currency').value;
+      
+      if (!state.apiKey) {
+        showToast('Please enter an API key', 'danger');
+        return;
+      }
+      
+      saveState();
+      showToast('Settings saved', 'success');
+    }
+
+    function renderApiKey() {
+      document.getElementById('apiKey').value = state.apiKey;
+    }
+
+    function renderCurrency() {
+      document.getElementById('currency').value = state.currency;
+    }
+
+    // ==================== API LAYER ====================
+    async function fetchQuote(ticker) {
+      if (!state.apiKey) {
+        showToast('Set up your Finnhub API key first', 'danger');
+        return null;
+      }
+      
+      try {
+        const url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${state.apiKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        if (data.c === undefined || data.c === 0) {
+          return null;
+        }
+        
+        return {
+          price: data.c,
+          change: data.d || 0,
+          changePercent: data.dp || 0,
+          high: data.h,
+          low: data.l,
+          prevClose: data.pc
+        };
+      } catch (e) {
+        console.error(`Error fetching ${ticker}:`, e);
+        return null;
+      }
+    }
+
+    async function fetchProfile(ticker) {
+      if (!state.apiKey) return null;
+      // Use cache if available
+      if (state.profileCache[ticker]) return state.profileCache[ticker];
+      
+      try {
+        const url = `https://finnhub.io/api/v1/stock/profile2?symbol=${ticker}&token=${state.apiKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data && data.name) {
+          state.profileCache[ticker] = data;
+          saveState();
+          return data;
+        }
+        return null;
+      } catch (e) {
+        console.error(`Error fetching profile for ${ticker}:`, e);
+        return null;
+      }
+    }
+
+    async function autoFillProfile() {
+      const tickerInput = document.getElementById('addTicker');
+      const ticker = tickerInput.value.toUpperCase().trim();
+      if (!ticker || !state.apiKey) return;
+      
+      const loader = document.getElementById('addTickerLoader');
+      loader.classList.add('active');
+      
+      const profile = await fetchProfile(ticker);
+      
+      loader.classList.remove('active');
+      
+      if (profile) {
+        const sectorInput = document.getElementById('addSector');
+        if (!sectorInput.value && profile.finnhubIndustry) {
+          sectorInput.value = profile.finnhubIndustry;
+        }
+        showToast(`Found: ${profile.name}`, 'success');
+      }
+    }
+
+    async function refreshAllPrices() {
+      if (!state.apiKey) {
+        showToast('Set up your API key first', 'danger');
+        navigate('setup');
+        return;
+      }
+      
+      if (state.holdings.length === 0) {
+        showToast('No holdings to refresh', 'warning');
+        return;
+      }
+      
+      const refreshBtn = document.getElementById('refreshBtn');
+      if (refreshBtn) {
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = '<div class="spinner"></div> Refreshing...';
+      }
+      
+      const tickers = [...new Set(state.holdings.map(h => h.ticker))];
+      let success = 0;
+      let failed = 0;
+      
+      for (let i = 0; i < tickers.length; i++) {
+        const ticker = tickers[i];
+        const quote = await fetchQuote(ticker);
+        
+        if (quote) {
+          state.priceCache[ticker] = { ...quote, updatedAt: Date.now() };
+          success++;
+        } else {
+          failed++;
+        }
+        
+        if (i < tickers.length - 1) {
+          await sleep(1100); // ~54 calls/min, safely under 60
+        }
+      }
+      
+      snapshotToday();
+      saveState();
+      
+      if (refreshBtn) {
+        refreshBtn.disabled = false;
+        refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0114.85-3.36M20.49 15a9 9 0 01-14.85 3.36"></path></svg> Refresh Prices';
+      }
+      
+      // Re-render current view
+      const active = document.querySelector('.view.active')?.id;
+      if (active === 'dashboard') renderDashboard();
+      else if (active === 'holdings') renderHoldingsTable();
+      
+      const msg = failed > 0 
+        ? `Updated ${success}, ${failed} failed`
+        : `Updated ${success} ticker${success !== 1 ? 's' : ''}`;
+      showToast(msg, failed > 0 ? 'warning' : 'success');
+    }
+
+    async function checkMarketStatus() {
+      if (!state.apiKey) return;
+      
+      try {
+        const url = `https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${state.apiKey}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        const statusEl = document.getElementById('marketStatus');
+        if (data.isOpen) {
+          statusEl.className = 'market-status open';
+          statusEl.textContent = 'Market Open';
+        } else {
+          statusEl.className = 'market-status closed';
+          statusEl.textContent = 'Market Closed';
+        }
+      } catch (e) {
+        console.error('Error checking market status:', e);
+      }
+    }
+
+    function checkStaleData() {
+      const filtered = getFilteredHoldings();
+      if (filtered.length === 0) return;
+
+      const tickers = [...new Set(filtered.map(h => h.ticker))];
+      const cachedTickers = tickers.filter(t => state.priceCache[t]);
+      if (cachedTickers.length === 0) return;
+      
+      const oldestUpdate = Math.min(...cachedTickers.map(t => state.priceCache[t].updatedAt || 0));
+      const age = Date.now() - oldestUpdate;
+      
+      if (age > STALE_THRESHOLD_MS) {
+        const mins = Math.floor(age / 60000);
+        showToast(`Prices last updated ${mins}m ago. Consider refreshing.`, 'warning');
+      }
+    }
+
+    // ==================== PORTFOLIO MATH ====================
+    function calcHoldingValue(holding) {
+      const price = state.priceCache[holding.ticker]?.price ?? holding.avgCost;
+      const currentValue = price * holding.shares;
+      const costBasis = holding.avgCost * holding.shares;
+      const gainLoss = currentValue - costBasis;
+      const gainLossPct = costBasis > 0 ? (gainLoss / costBasis) * 100 : 0;
+      
+      return {
+        currentValue,
+        costBasis,
+        gainLoss,
+        gainLossPct,
+        currentPrice: price
+      };
+    }
+
+    function calcPortfolioTotals() {
+      let totalValue = 0;
+      let totalCost = 0;
+      let totalGainLoss = 0;
+      let dayChange = 0;
+      
+      getFilteredHoldings().forEach(h => {
+        const v = calcHoldingValue(h);
+        const quote = state.priceCache[h.ticker];
+        
+        totalValue += v.currentValue;
+        totalCost += v.costBasis;
+        totalGainLoss += v.gainLoss;
+        
+        if (quote && quote.change) {
+          dayChange += quote.change * h.shares;
+        }
+      });
+      
+      return {
+        totalValue,
+        totalCost,
+        totalGainLoss,
+        dayChange,
+        gainLossPct: totalCost > 0 ? (totalGainLoss / totalCost) * 100 : 0
+      };
+    }
+
+    function calcDividendTotals() {
+      const now = new Date();
+      const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+      
+      return getFilteredDividends()
+        .filter(d => new Date(d.date) >= oneYearAgo)
+        .reduce((sum, d) => sum + d.amount, 0);
+    }
+
+    function calcCallIncome() {
+      return getFilteredCoveredCalls()
+        .reduce((sum, c) => sum + (c.premium * c.contracts * 100), 0);
+    }
+
+    function getBestPerformer() {
+      const filtered = getFilteredHoldings();
+      if (filtered.length === 0) return null;
+      let best = null;
+      filtered.forEach(h => {
+        const v = calcHoldingValue(h);
+        if (!best || v.gainLossPct > best.gainLossPct) {
+          best = { ticker: h.ticker, ...v };
+        }
+      });
+      return best;
+    }
+
+    function getWorstPerformer() {
+      const filtered = getFilteredHoldings();
+      if (filtered.length === 0) return null;
+      let worst = null;
+      filtered.forEach(h => {
+        const v = calcHoldingValue(h);
+        if (!worst || v.gainLossPct < worst.gainLossPct) {
+          worst = { ticker: h.ticker, ...v };
+        }
+      });
+      return worst;
+    }
+
+    function getConcentrationWarning() {
+      const totals = calcPortfolioTotals();
+      if (totals.totalValue === 0) return null;
+      
+      const overweight = getFilteredHoldings().filter(h => {
+        const v = calcHoldingValue(h);
+        return (v.currentValue / totals.totalValue) > 0.20;
+      });
+      
+      if (overweight.length === 0) return null;
+      
+      return overweight.map(h => {
+        const v = calcHoldingValue(h);
+        const pct = (v.currentValue / totals.totalValue) * 100;
+        return { ticker: h.ticker, pct };
+      });
+    }
+
+    function snapshotToday() {
+      const today = new Date().toISOString().split('T')[0];
+      const idx = state.snapshots.findIndex(s => s.date === today);
+      
+      if (state.holdings.length === 0) return;
+      
+      const { totalValue } = calcPortfolioTotals();
+      if (idx >= 0) {
+        // Update today's snapshot with latest value
+        state.snapshots[idx].totalValue = totalValue;
+      } else {
+        state.snapshots.push({ date: today, totalValue });
+      }
+      saveState();
+    }
+
+    // ==================== HOLDINGS ====================
+    function addPosition() {
+      const ticker = document.getElementById('addTicker').value.toUpperCase().trim();
+      const accountId = document.getElementById('addAccountId').value;
+      const type = document.getElementById('addType').value;
+      const shares = parseFloat(document.getElementById('addShares').value);
+      const avgCost = parseFloat(document.getElementById('addCost').value);
+      const buyDate = document.getElementById('addDate').value;
+      const sector = document.getElementById('addSector').value.trim() || 'Other';
+      const notes = document.getElementById('addNotes').value;
+      
+      if (!ticker || !shares || !avgCost) {
+        showToast('Please fill in ticker, shares, and cost', 'danger');
+        return;
+      }
+      
+      // Try to get name from profile cache
+      const profile = state.profileCache[ticker];
+      const name = profile?.name || ticker;
+      
+      const id = 'h_' + Date.now();
+      state.holdings.push({
+        id,
+        ticker,
+        name,
+        type,
+        shares,
+        avgCost,
+        buyDate: buyDate || new Date().toISOString().split('T')[0],
+        sector,
+        notes,
+        accountId
+      });
+      
+      saveState();
+      clearAddForm();
+      navigate('holdings');
+      showToast(`Added ${shares} shares of ${ticker}`, 'success');
+    }
+
+    function clearAddForm() {
+      ['addTicker', 'addShares', 'addCost', 'addDate', 'addSector', 'addNotes'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+    }
+
+    function deleteHoldingConfirm(id) {
+      const h = state.holdings.find(x => x.id === id);
+      if (!h) return;
+      
+      showConfirm(
+        'Delete Position?',
+        `Remove ${h.shares} shares of ${h.ticker} from your portfolio? This action cannot be undone.`,
+        'Delete',
+        () => {
+          state.holdings = state.holdings.filter(x => x.id !== id);
+          saveState();
+          renderHoldingsTable();
+          showToast('Position deleted', 'success');
+        }
+      );
+    }
+
+    function editHolding(id) {
+      const h = state.holdings.find(x => x.id === id);
+      if (!h) return;
+      
+      document.getElementById('editId').value = h.id;
+      document.getElementById('editTicker').value = h.ticker;
+      document.getElementById('editType').value = h.type;
+      document.getElementById('editShares').value = h.shares;
+      document.getElementById('editCost').value = h.avgCost;
+      document.getElementById('editDate').value = h.buyDate;
+      document.getElementById('editSector').value = h.sector;
+      document.getElementById('editNotes').value = h.notes || '';
+      populateAccountSelect('editAccountId', h.accountId);
+      
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    function saveEdit() {
+      const id = document.getElementById('editId').value;
+      const h = state.holdings.find(x => x.id === id);
+      if (!h) return;
+      
+      const ticker = document.getElementById('editTicker').value.toUpperCase().trim();
+      const shares = parseFloat(document.getElementById('editShares').value);
+      const avgCost = parseFloat(document.getElementById('editCost').value);
+      
+      if (!ticker || !shares || !avgCost) {
+        showToast('Please fill in all required fields', 'danger');
+        return;
+      }
+      
+      h.ticker = ticker;
+      h.type = document.getElementById('editType').value;
+      h.shares = shares;
+      h.avgCost = avgCost;
+      h.buyDate = document.getElementById('editDate').value;
+      h.sector = document.getElementById('editSector').value.trim() || 'Other';
+      h.notes = document.getElementById('editNotes').value;
+      h.accountId = document.getElementById('editAccountId').value;
+      
+      saveState();
+      closeEditModal();
+      renderHoldingsTable();
+      showToast('Position updated', 'success');
+    }
+
+    // ==================== SORTING ====================
+    function sortHoldings(column) {
+      if (sortState.column === column) {
+        sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortState.column = column;
+        sortState.direction = 'desc';
+      }
+      renderHoldingsTable();
+    }
+
+    function getSortedHoldings() {
+      const list = getFilteredHoldings();
+      if (!sortState.column) return list;
+      
+      return [...list].sort((a, b) => {
+        const vA = calcHoldingValue(a);
+        const vB = calcHoldingValue(b);
+        let aVal, bVal;
+        
+        switch (sortState.column) {
+          case 'ticker':
+            aVal = a.ticker;
+            bVal = b.ticker;
+            break;
+          case 'shares':
+            aVal = a.shares;
+            bVal = b.shares;
+            break;
+          case 'avgCost':
+            aVal = a.avgCost;
+            bVal = b.avgCost;
+            break;
+          case 'price':
+            aVal = vA.currentPrice;
+            bVal = vB.currentPrice;
+            break;
+          case 'value':
+            aVal = vA.currentValue;
+            bVal = vB.currentValue;
+            break;
+          case 'gainLoss':
+            aVal = vA.gainLoss;
+            bVal = vB.gainLoss;
+            break;
+          case 'gainLossPct':
+            aVal = vA.gainLossPct;
+            bVal = vB.gainLossPct;
+            break;
+          default:
+            return 0;
+        }
+        
+        if (typeof aVal === 'string') {
+          return sortState.direction === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        }
+        return sortState.direction === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    }
+
+    function updateSortIndicators() {
+      document.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('active');
+        const indicator = th.querySelector('.sort-indicator');
+        if (indicator) indicator.textContent = '▼';
+      });
+      
+      const activeHeader = document.querySelector(`th.sortable[onclick*="${sortState.column}"]`);
+      if (activeHeader) {
+        activeHeader.classList.add('active');
+        const indicator = activeHeader.querySelector('.sort-indicator');
+        if (indicator) indicator.textContent = sortState.direction === 'asc' ? '▲' : '▼';
+      }
+    }
+
+    function renderHoldingsTable() {
+      const tbody = document.getElementById('holdingsTable');
+      const showAccountCol = state.activeAccountFilter === 'all';
+      const accountHeader = document.getElementById('holdingsAccountHeader');
+      if (accountHeader) accountHeader.style.display = showAccountCol ? '' : 'none';
+      
+      const filtered = getFilteredHoldings();
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="100%">
+            <div class="empty-state">
+              <div class="empty-state-title">No holdings yet</div>
+              <div>Add your first position to get started</div>
+            </div>
+          </td></tr>
+        `;
+        return;
+      }
+      
+      updateSortIndicators();
+      const sorted = getSortedHoldings();
+      
+      tbody.innerHTML = sorted.map(h => {
+        const v = calcHoldingValue(h);
+        const quote = state.priceCache[h.ticker];
+        const price = quote?.price ?? h.avgCost;
+        const hasLivePrice = !!quote?.price;
+        
+        // Row highlighting
+        let rowClass = '';
+        if (v.gainLossPct > 5) rowClass = 'big-gain';
+        else if (v.gainLossPct < -5) rowClass = 'big-loss';
+        
+        // Stale indicator
+        const staleBadge = hasLivePrice ? renderStaleBadge(h.ticker) : '';
+        const accountCell = showAccountCol ? `<td>${renderAccountBadge(h.accountId)}</td>` : '';
+        
+        return `
+          <tr class="${rowClass}" data-ticker="${h.ticker}">
+            <td>
+              <strong>${h.ticker}</strong>
+              ${h.name && h.name !== h.ticker ? `<div style="font-size: var(--text-xs); color: var(--color-text-muted);">${escapeHtml(h.name)}</div>` : ''}
+            </td>
+            ${accountCell}
+            <td><span class="badge badge-primary">${h.type}</span></td>
+            <td>${h.shares.toFixed(h.shares < 1 ? 4 : 2)}</td>
+            <td>${formatCurrency(h.avgCost)}</td>
+            <td>
+              ${formatCurrency(price)}${staleBadge}
+            </td>
+            <td>${formatCurrency(v.currentValue)}</td>
+            <td class="amount ${v.gainLoss >= 0 ? 'positive' : 'negative'}">${formatCurrency(v.gainLoss)}</td>
+            <td class="amount ${v.gainLoss >= 0 ? 'positive' : 'negative'}">${v.gainLossPct >= 0 ? '+' : ''}${v.gainLossPct.toFixed(2)}%</td>
+            <td>
+              <div style="display: flex; gap: 4px;">
+                <button class="btn btn-icon btn-secondary" onclick="editHolding('${h.id}')" title="Edit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button class="btn btn-icon btn-danger" onclick="deleteHoldingConfirm('${h.id}')" title="Delete">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderStaleBadge(ticker) {
+      const cache = state.priceCache[ticker];
+      if (!cache?.updatedAt) return '';
+      
+      const elapsed = Date.now() - cache.updatedAt;
+      const timeStr = formatElapsed(elapsed);
+      const isStale = elapsed > STALE_THRESHOLD_MS;
+      
+      return isStale
+        ? `<span class="badge-stale">⚠ ${timeStr}</span>`
+        : `<span class="badge-fresh">${timeStr}</span>`;
+    }
+
+    function formatElapsed(ms) {
+      if (ms < 60000) return 'just now';
+      if (ms < 3600000) return Math.floor(ms / 60000) + 'm ago';
+      if (ms < 86400000) return Math.floor(ms / 3600000) + 'h ago';
+      return Math.floor(ms / 86400000) + 'd ago';
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ==================== DASHBOARD ====================
+    function renderDashboard() {
+      const totals = calcPortfolioTotals();
+      const annualDiv = calcDividendTotals();
+      const callInc = calcCallIncome();
+      
+      document.getElementById('totalValue').textContent = formatCurrency(totals.totalValue);
+      
+      const dayChangeEl = document.getElementById('totalChange');
+      dayChangeEl.textContent = `${totals.dayChange >= 0 ? '+' : ''}${formatCurrency(totals.dayChange)} today`;
+      dayChangeEl.className = 'card-change ' + (totals.dayChange >= 0 ? 'positive' : 'negative');
+      
+      document.getElementById('totalCost').textContent = formatCurrency(totals.totalCost);
+      
+      const gainLossEl = document.getElementById('gainLoss');
+      gainLossEl.textContent = `${totals.totalGainLoss >= 0 ? '+' : ''}${formatCurrency(totals.totalGainLoss)}`;
+      gainLossEl.style.color = totals.totalGainLoss >= 0 
+        ? 'var(--color-success)' 
+        : 'var(--color-danger)';
+      
+      const gainPctEl = document.getElementById('gainLossPercent');
+      gainPctEl.textContent = `${totals.gainLossPct >= 0 ? '+' : ''}${totals.gainLossPct.toFixed(2)}%`;
+      gainPctEl.className = 'card-change ' + (totals.totalGainLoss >= 0 ? 'positive' : 'negative');
+      
+      const dayEl = document.getElementById('dayChange');
+      dayEl.textContent = `${totals.dayChange >= 0 ? '+' : ''}${formatCurrency(totals.dayChange)}`;
+      dayEl.style.color = totals.dayChange >= 0 
+        ? 'var(--color-success)' 
+        : 'var(--color-danger)';
+      
+      // Best/Worst performers
+      const best = getBestPerformer();
+      const worst = getWorstPerformer();
+      
+      if (best) {
+        document.getElementById('bestPerformer').textContent = best.ticker;
+        document.getElementById('bestPerformerPct').textContent = 
+          `${best.gainLossPct >= 0 ? '+' : ''}${best.gainLossPct.toFixed(2)}%`;
+      } else {
+        document.getElementById('bestPerformer').textContent = '-';
+        document.getElementById('bestPerformerPct').textContent = '-';
+      }
+      
+      if (worst && worst.ticker !== best?.ticker) {
+        document.getElementById('worstPerformer').textContent = worst.ticker;
+        document.getElementById('worstPerformerPct').textContent = 
+          `${worst.gainLossPct >= 0 ? '+' : ''}${worst.gainLossPct.toFixed(2)}%`;
+      } else {
+        document.getElementById('worstPerformer').textContent = '-';
+        document.getElementById('worstPerformerPct').textContent = '-';
+      }
+      
+      document.getElementById('annualDividends').textContent = formatCurrency(annualDiv);
+      const divYield = totals.totalCost > 0 ? (annualDiv / totals.totalCost) * 100 : 0;
+      document.getElementById('divYield').textContent = `${divYield.toFixed(2)}% yield`;
+      
+      document.getElementById('callIncome').textContent = formatCurrency(callInc);
+      document.getElementById('positionCount').textContent = getFilteredHoldings().length;
+      
+      // Last updated
+      const cachedTickers = Object.keys(state.priceCache);
+      if (cachedTickers.length > 0) {
+        const latest = Math.max(...cachedTickers.map(t => state.priceCache[t].updatedAt || 0));
+        if (latest > 0) {
+          const date = new Date(latest);
+          document.getElementById('lastUpdated').textContent = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          document.getElementById('lastUpdatedDate').textContent = formatElapsed(Date.now() - latest);
+        }
+      } else {
+        document.getElementById('lastUpdated').textContent = 'Never';
+        document.getElementById('lastUpdatedDate').textContent = '';
+      }
+      
+      // Concentration alert
+      renderConcentrationAlert();
+      
+      // Per-account breakdown (only shown in the combined "All Accounts" view)
+      renderAccountBreakdown();
+      
+      // Charts
+      renderAllocationChart();
+      renderHoldingsChart();
+    }
+
+    function renderConcentrationAlert() {
+      const container = document.getElementById('concentrationAlert');
+      const warnings = getConcentrationWarning();
+      
+      if (!warnings || warnings.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+      
+      const list = warnings.map(w => `<strong>${w.ticker}</strong> (${w.pct.toFixed(1)}%)`).join(', ');
+      container.innerHTML = `
+        <div class="alert alert-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <div>Concentration warning: ${list} ${warnings.length > 1 ? 'are' : 'is'} over 20% of your portfolio</div>
+        </div>
+      `;
+    }
+
+    function renderAllocationChart() {
+      const ctx = document.getElementById('allocationChart');
+      if (!ctx) return;
+      
+      if (chartInstances.allocation) {
+        chartInstances.allocation.destroy();
+      }
+      
+      const filtered = getFilteredHoldings();
+      
+      if (filtered.length === 0) {
+        chartInstances.allocation = null;
+        return;
+      }
+      
+      const grouped = {};
+      filtered.forEach(h => {
+        const sector = h.sector || 'Other';
+        if (!grouped[sector]) grouped[sector] = 0;
+        const v = calcHoldingValue(h);
+        grouped[sector] += v.currentValue;
+      });
+      
+      const labels = Object.keys(grouped);
+      const data = Object.values(grouped);
+      const colors = [
+        '#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+        '#06b6d4', '#ec4899', '#14b8a6', '#f97316', '#6366f1'
+      ];
+      
+      const textColor = getCSSVar('--color-text');
+      const bgColor = getCSSVar('--color-bg-elevated');
+      
+      chartInstances.allocation = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            backgroundColor: colors.slice(0, labels.length),
+            borderColor: bgColor,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { family: "'DM Sans', sans-serif", size: 12 },
+                color: textColor,
+                padding: 12,
+                boxWidth: 12
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                  const pct = ((ctx.parsed / total) * 100).toFixed(1);
+                  return `${ctx.label}: ${formatCurrency(ctx.parsed)} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderHoldingsChart() {
+      const ctx = document.getElementById('holdingsChart');
+      if (!ctx) return;
+      
+      if (chartInstances.holdings) {
+        chartInstances.holdings.destroy();
+      }
+      
+      if (getFilteredHoldings().length === 0) {
+        chartInstances.holdings = null;
+        return;
+      }
+      
+      // Sort by value descending
+      const sorted = [...getFilteredHoldings()]
+        .map(h => ({ ticker: h.ticker, value: calcHoldingValue(h).currentValue, gainLoss: calcHoldingValue(h).gainLoss }))
+        .sort((a, b) => b.value - a.value);
+      
+      const labels = sorted.map(h => h.ticker);
+      const data = sorted.map(h => h.value);
+      const colors = sorted.map(h => h.gainLoss >= 0 ? '#10b981' : '#ef4444');
+      
+      const textColor = getCSSVar('--color-text');
+      const borderColor = getCSSVar('--color-border');
+      
+      chartInstances.holdings = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Position Value',
+            data,
+            backgroundColor: colors,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => formatCurrency(ctx.parsed.x)
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                callback: v => formatCurrency(v),
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { color: borderColor }
+            },
+            y: {
+              ticks: {
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { color: borderColor }
+            }
+          }
+        }
+      });
+    }
+
+    function renderPerformanceChart() {
+      const ctx = document.getElementById('performanceChart');
+      if (!ctx) return;
+      
+      if (chartInstances.performance) {
+        chartInstances.performance.destroy();
+      }
+      
+      const sorted = [...state.snapshots].sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      if (sorted.length === 0) {
+        chartInstances.performance = null;
+        return;
+      }
+      
+      const labels = sorted.map(s => s.date);
+      const data = sorted.map(s => s.totalValue);
+      
+      const textColor = getCSSVar('--color-text');
+      const borderColor = getCSSVar('--color-border');
+      
+      chartInstances.performance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Portfolio Value',
+            data,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 3,
+            pointBackgroundColor: '#2563eb',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                font: { family: "'DM Sans', sans-serif" },
+                color: textColor
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => formatCurrency(ctx.parsed.y)
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: v => formatCurrency(v),
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { color: borderColor }
+            },
+            x: {
+              ticks: {
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { color: borderColor }
+            }
+          }
+        }
+      });
+    }
+
+    // ==================== DIVIDENDS ====================
+    function addDividend() {
+      const ticker = document.getElementById('divTicker').value.toUpperCase().trim();
+      const amount = parseFloat(document.getElementById('divAmount').value);
+      const date = document.getElementById('divDate').value;
+      const perShare = parseFloat(document.getElementById('divPerShare').value);
+      const accountId = document.getElementById('divAccountId').value;
+      
+      if (!ticker || !amount || !date) {
+        showToast('Please fill in ticker, amount, and date', 'danger');
+        return;
+      }
+      
+      state.dividends.push({
+        id: 'd_' + Date.now(),
+        ticker,
+        amount,
+        date,
+        perShare: perShare || 0,
+        accountId
+      });
+      
+      saveState();
+      ['divTicker', 'divAmount', 'divDate', 'divPerShare'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      renderDividendTable();
+      renderDividendChart();
+      showToast('Dividend logged', 'success');
+    }
+
+    function deleteDividendConfirm(id) {
+      const d = state.dividends.find(x => x.id === id);
+      if (!d) return;
+      
+      showConfirm(
+        'Delete Dividend?',
+        `Remove ${formatCurrency(d.amount)} ${d.ticker} dividend from ${d.date}?`,
+        'Delete',
+        () => {
+          state.dividends = state.dividends.filter(x => x.id !== id);
+          saveState();
+          renderDividendTable();
+          renderDividendChart();
+          showToast('Dividend deleted', 'success');
+        }
+      );
+    }
+
+    function renderDividendTable() {
+      const tbody = document.getElementById('dividendTable');
+      const showAccountCol = state.activeAccountFilter === 'all';
+      const accountHeader = document.getElementById('dividendAccountHeader');
+      if (accountHeader) accountHeader.style.display = showAccountCol ? '' : 'none';
+      
+      const filtered = getFilteredDividends();
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100%"><div class="empty-state"><div>No dividends logged yet</div></div></td></tr>';
+        return;
+      }
+      
+      const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      tbody.innerHTML = sorted.map(d => {
+        const accountCell = showAccountCol ? `<td>${renderAccountBadge(d.accountId)}</td>` : '';
+        return `
+        <tr>
+          <td><strong>${d.ticker}</strong></td>
+          ${accountCell}
+          <td>${formatDate(d.date)}</td>
+          <td>${d.perShare > 0 ? '$' + d.perShare.toFixed(4) : '-'}</td>
+          <td class="amount positive">${formatCurrency(d.amount)}</td>
+          <td>
+            <button class="btn btn-icon btn-danger" onclick="deleteDividendConfirm('${d.id}')" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+            </button>
+          </td>
+        </tr>
+      `;
+      }).join('');
+    }
+
+    function renderDividendChart() {
+      const ctx = document.getElementById('dividendChart');
+      if (!ctx) return;
+      
+      if (chartInstances.dividend) {
+        chartInstances.dividend.destroy();
+      }
+      
+      // Build last 12 months
+      const now = new Date();
+      const months = [];
+      const monthlyData = {};
+      
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        months.push({ key, label });
+        monthlyData[key] = 0;
+      }
+      
+      getFilteredDividends().forEach(d => {
+        const key = d.date.substring(0, 7);
+        if (monthlyData.hasOwnProperty(key)) {
+          monthlyData[key] += d.amount;
+        }
+      });
+      
+      const labels = months.map(m => m.label);
+      const data = months.map(m => monthlyData[m.key]);
+      
+      const textColor = getCSSVar('--color-text');
+      const borderColor = getCSSVar('--color-border');
+      
+      chartInstances.dividend = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Dividends',
+            data,
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => formatCurrency(ctx.parsed.y)
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: v => formatCurrency(v),
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { color: borderColor }
+            },
+            x: {
+              ticks: {
+                color: textColor,
+                font: { family: "'DM Sans', sans-serif" }
+              },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // ==================== COVERED CALLS ====================
+    function addCoveredCall() {
+      const ticker = document.getElementById('callTicker').value.toUpperCase().trim();
+      const strike = parseFloat(document.getElementById('callStrike').value);
+      const expiry = document.getElementById('callExpiry').value;
+      const premium = parseFloat(document.getElementById('callPremium').value);
+      const contracts = parseInt(document.getElementById('callContracts').value);
+      const accountId = document.getElementById('callAccountId').value;
+      
+      if (!ticker || !strike || !expiry || !premium || !contracts) {
+        showToast('Please fill in all fields', 'danger');
+        return;
+      }
+      
+      state.coveredCalls.push({
+        id: 'c_' + Date.now(),
+        ticker,
+        strike,
+        expiry,
+        premium,
+        contracts,
+        status: 'open',
+        accountId
+      });
+      
+      saveState();
+      ['callTicker', 'callStrike', 'callExpiry', 'callPremium', 'callContracts'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      renderCallsTable();
+      showToast('Covered call logged', 'success');
+    }
+
+    function deleteCallConfirm(id) {
+      const c = state.coveredCalls.find(x => x.id === id);
+      if (!c) return;
+      
+      showConfirm(
+        'Delete Covered Call?',
+        `Remove ${c.ticker} $${c.strike} call expiring ${formatDate(c.expiry)}?`,
+        'Delete',
+        () => {
+          state.coveredCalls = state.coveredCalls.filter(x => x.id !== id);
+          saveState();
+          renderCallsTable();
+          showToast('Call deleted', 'success');
+        }
+      );
+    }
+
+    function updateCallStatus(id, status) {
+      const call = state.coveredCalls.find(c => c.id === id);
+      if (call) {
+        call.status = status;
+        saveState();
+        renderCallsTable();
+      }
+    }
+
+    function renderCallsTable() {
+      const tbody = document.getElementById('callsTable');
+      const showAccountCol = state.activeAccountFilter === 'all';
+      const accountHeader = document.getElementById('callsAccountHeader');
+      if (accountHeader) accountHeader.style.display = showAccountCol ? '' : 'none';
+      
+      const filtered = getFilteredCoveredCalls();
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100%"><div class="empty-state"><div>No covered calls logged yet</div></div></td></tr>';
+        return;
+      }
+      
+      const sorted = [...filtered].sort((a, b) => new Date(a.expiry) - new Date(b.expiry));
+      
+      tbody.innerHTML = sorted.map(c => {
+        const statusClass = c.status === 'open' ? 'badge-primary' : c.status === 'expired' ? 'badge-success' : 'badge-warning';
+        const accountCell = showAccountCol ? `<td>${renderAccountBadge(c.accountId)}</td>` : '';
+        return `
+          <tr>
+            <td><strong>${c.ticker}</strong></td>
+            ${accountCell}
+            <td>$${c.strike.toFixed(2)}</td>
+            <td>${formatDate(c.expiry)}</td>
+            <td class="amount positive">${formatCurrency(c.premium * c.contracts * 100)}</td>
+            <td>
+              <select onchange="updateCallStatus('${c.id}', this.value)" class="form-select" style="padding: 4px 8px; font-size: var(--text-sm); width: auto; display: inline-block;">
+                <option value="open" ${c.status === 'open' ? 'selected' : ''}>Open</option>
+                <option value="expired" ${c.status === 'expired' ? 'selected' : ''}>Expired</option>
+                <option value="assigned" ${c.status === 'assigned' ? 'selected' : ''}>Assigned</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-icon btn-danger" onclick="deleteCallConfirm('${c.id}')" title="Delete">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==================== SETTINGS ====================
+    function exportData() {
+      const json = JSON.stringify(state, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `portfolio-backup-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('Portfolio exported', 'success');
+    }
+
+    document.getElementById('importFile').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (imported.holdings !== undefined && imported.dividends !== undefined) {
+            if (!imported.profileCache) imported.profileCache = {};
+            state = imported;
+            migrateAccounts();
+            saveState();
+            renderAccountSwitcher();
+            refreshAccountSelects();
+            showToast('Portfolio imported', 'success');
+            navigate('dashboard');
+          } else {
+            showToast('Invalid portfolio file', 'danger');
+          }
+        } catch (err) {
+          showToast('Error importing file', 'danger');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function resetConfirm() {
+      showConfirm(
+        'Reset All Data?',
+        'This will delete all holdings, dividends, and covered calls. Your accounts, API key, and currency will be kept. This action cannot be undone.',
+        'Reset',
+        () => {
+          state = {
+            apiKey: state.apiKey,
+            currency: state.currency,
+            accounts: state.accounts,
+            activeAccountFilter: 'all',
+            holdings: [],
+            priceCache: {},
+            profileCache: {},
+            dividends: [],
+            coveredCalls: [],
+            snapshots: []
+          };
+          saveState();
+          renderAccountSwitcher();
+          refreshAccountSelects();
+          showToast('All data reset', 'success');
+          navigate('dashboard');
+        }
+      );
+    }
+
+    // ==================== UTILS ====================
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: state.currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function formatDate(isoStr) {
+      if (!isoStr) return '-';
+      const d = new Date(isoStr + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function showToast(message, type = 'success') {
+      // Remove existing toasts
+      document.querySelectorAll('.toast').forEach(t => t.remove());
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3500);
+    }
+
+    function showConfirm(title, message, btnText, callback) {
+      window.confirmCallback = callback;
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      document.getElementById('confirmBtn').textContent = btnText;
+      document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').classList.remove('active');
+      window.confirmCallback = null;
+    }
+
+    function executeConfirm() {
+      if (window.confirmCallback) {
+        window.confirmCallback();
+      }
+      closeConfirmModal();
+    }
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // Close modals on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
+      }
+    });
+  </script>
+</body>
+</html>
